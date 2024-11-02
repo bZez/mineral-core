@@ -12,6 +12,7 @@ import 'package:mineral/src/infrastructure/internals/hmr/hot_module_reloading.da
 import 'package:mineral/src/infrastructure/internals/hmr/watcher_config.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/src/infrastructure/internals/packets/packet_listener.dart';
+import 'package:mineral/src/infrastructure/internals/voice/voice_manager.dart';
 import 'package:mineral/src/infrastructure/internals/wss/shard.dart';
 import 'package:mineral/src/infrastructure/internals/wss/sharding_config.dart';
 import 'package:mineral/src/infrastructure/io/exceptions/token_exception.dart';
@@ -45,6 +46,8 @@ abstract interface class KernelContract {
   HotModuleReloading? get hmr;
 
   CommandInteractionManagerContract get commands;
+
+  VoiceManagerContract get voices;
 
   Future<void> init();
 }
@@ -94,6 +97,9 @@ final class Kernel implements KernelContract {
   @override
   final CommandInteractionManagerContract commands;
 
+  @override
+  final VoiceManagerContract voices;
+
   Kernel(
     this._hasDefinedDevPort,
     this._devPort, {
@@ -108,6 +114,7 @@ final class Kernel implements KernelContract {
     required this.dataStore,
     required this.watcherConfig,
     required this.commands,
+    required this.voices,
   }) {
     _watch.start();
     httpClient.config.headers.addAll([

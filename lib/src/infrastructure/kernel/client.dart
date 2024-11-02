@@ -14,6 +14,7 @@ import 'package:mineral/src/infrastructure/internals/environment/environment.dar
 import 'package:mineral/src/infrastructure/internals/hmr/watcher_config.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/src/infrastructure/internals/packets/packet_listener.dart';
+import 'package:mineral/src/infrastructure/internals/voice/voice_manager.dart';
 import 'package:mineral/src/infrastructure/internals/wss/sharding_config.dart';
 import 'package:mineral/src/infrastructure/kernel/kernel.dart';
 import 'package:mineral/src/infrastructure/kernel/mineral_client.dart';
@@ -139,12 +140,13 @@ final class Client {
     final marshaller = Marshaller(_logger, _cache!);
     final datastore = DataStore(http);
     final commandInteractionManager = CommandInteractionManager(marshaller);
+    final voiceManager = VoiceManager(marshaller);
 
     ioc
       ..bind(MarshallerContract, () => marshaller)
       ..bind(DataStoreContract, () => datastore)
-      ..bind(
-          CommandInteractionManagerContract, () => commandInteractionManager);
+      ..bind(CommandInteractionManagerContract, () => commandInteractionManager)
+      ..bind(VoiceManagerContract, () => voiceManager);
 
     final packetListener = PacketListener();
     final eventListener = EventListener();
@@ -164,6 +166,7 @@ final class Client {
       marshaller: marshaller,
       dataStore: datastore,
       commands: commandInteractionManager,
+      voices: voiceManager,
     );
 
     datastore.kernel = kernel;
