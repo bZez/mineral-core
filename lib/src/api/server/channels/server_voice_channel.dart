@@ -10,6 +10,7 @@ import 'package:mineral/src/api/server/channels/server_channel.dart';
 import 'package:mineral/src/api/server/managers/threads_manager.dart';
 import 'package:mineral/src/api/server/server.dart';
 import 'package:mineral/src/api/server/server_message.dart';
+import 'package:mineral/src/infrastructure/internals/voice/voice_controller.dart';
 
 final class ServerVoiceChannel extends ServerChannel {
   final ChannelProperties _properties;
@@ -116,4 +117,6 @@ final class ServerVoiceChannel extends ServerChannel {
   /// await channel.delete();
   /// ```
   Future<void> delete({String? reason}) => _methods.delete(reason);
+
+  Future<VoiceController> connect() => _methods.connect(server.id);
 }
