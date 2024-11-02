@@ -6,6 +6,7 @@ import 'package:mineral/src/api/common/video_quality.dart';
 import 'package:mineral/src/infrastructure/internals/container/ioc_container.dart';
 import 'package:mineral/src/infrastructure/internals/datastore/data_store.dart';
 import 'package:mineral/src/infrastructure/internals/datastore/parts/channel_part.dart';
+import 'package:mineral/src/infrastructure/internals/voice/voice_controller.dart';
 
 final class ChannelMethods {
   ChannelPart get dataStoreChannel => ioc.resolve<DataStoreContract>().channel;
@@ -124,5 +125,10 @@ final class ChannelMethods {
 
   Future<void> delete(String? reason) async {
     await dataStoreChannel.deleteChannel(id, reason);
+  }
+
+  Future<VoiceController> connect(Snowflake serverId) async {
+    print('Connecting to voice channel: $id');
+    return dataStoreChannel.connectChannel(serverId, id);
   }
 }

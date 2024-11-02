@@ -15,6 +15,7 @@ import 'package:mineral/src/infrastructure/commons/helper.dart';
 import 'package:mineral/src/infrastructure/internals/datastore/data_store_part.dart';
 import 'package:mineral/src/infrastructure/internals/http/discord_header.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/types/serializer.dart';
+import 'package:mineral/src/infrastructure/internals/voice/voice_controller.dart';
 import 'package:mineral/src/infrastructure/kernel/kernel.dart';
 import 'package:mineral/src/infrastructure/services/http/http_client_status.dart';
 import 'package:mineral/src/infrastructure/services/http/http_request_option.dart';
@@ -196,5 +197,17 @@ final class ChannelPart implements DataStorePart {
     await _kernel.marshaller.cache.putMany({
       _kernel.marshaller.cacheKey.server(server.id): rawServer,
     });
+  }
+
+  /// Used to connect bot to a voice channel.
+  Future<VoiceController> connectChannel(Snowflake serverId, Snowflake id) async {
+    print('try to connect to voice channel: $id');
+    final voiceController = VoiceController(_kernel, serverId: serverId, channelId: id, selfDeaf: false, selfMute: false);
+
+    _kernel.voices.addController(voiceController);
+    print('Shards: ${_kernel.shards}');
+    await voiceController.connect();
+
+    return voiceController;
   }
 }
