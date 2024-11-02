@@ -30,6 +30,7 @@ import 'package:mineral/src/infrastructure/internals/packets/listeners/thread_cr
 import 'package:mineral/src/infrastructure/internals/packets/listeners/thread_delete_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listeners/thread_members_update_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listeners/thread_update_packet.dart';
+import 'package:mineral/src/infrastructure/internals/packets/listeners/voice_server_update_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/packet_dispatcher.dart';
 import 'package:mineral/src/infrastructure/kernel/kernel.dart';
 import 'package:mineral/src/infrastructure/services/logger/logger.dart';
@@ -92,5 +93,6 @@ final class PacketListener implements PacketListenerContract {
     subscribe(ThreadUpdatePacket.new);
     subscribe(ThreadDeletePacket.new);
     subscribe(ThreadMembersUpdatePacket.new);
+    subscribe(VoiceServerUpdatePacket.new);
   }
 }
