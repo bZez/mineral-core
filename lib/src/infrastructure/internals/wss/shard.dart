@@ -65,7 +65,7 @@ final class Shard implements ShardContract {
           print('error $error');
           networkError.dispatch(error);
         },
-        onClose: (int? exitCode) {
+        onClose: (int? exitCode, String? reason) {
           networkError.dispatch(exitCode);
         },
         onOpen: (message) {

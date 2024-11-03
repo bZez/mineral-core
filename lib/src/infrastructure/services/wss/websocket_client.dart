@@ -27,7 +27,7 @@ final class WebsocketClientImpl implements WebsocketClient {
   io.WebSocket? _channel;
   StreamSubscription<dynamic>? _channelListener;
   final void Function(Object payload)? _onError;
-  final void Function(int? exitCode)? _onClose;
+  final void Function(int? exitCode, String? reason)? _onClose;
   final void Function(WebsocketMessage)? _onOpen;
   void Function(WebsocketMessage)? _onMessage;
 
@@ -47,7 +47,7 @@ final class WebsocketClientImpl implements WebsocketClient {
       {required this.url,
       this.name = 'default',
       void Function(Object payload)? onError,
-      void Function(int? exitCode)? onClose,
+      void Function(int? exitCode, String? reason)? onClose,
       void Function(WebsocketMessage)? onOpen})
       : _onError = onError,
         _onClose = onClose,
@@ -72,7 +72,7 @@ final class WebsocketClientImpl implements WebsocketClient {
       _channelListener = stream!.listen(
         (dynamic message) => _handleMessage(_onMessage, message),
         onDone: () {
-          _onClose!(_channel!.closeCode);
+          _onClose!(_channel!.closeCode, _channel!.closeReason);
         },
       );
 
@@ -120,7 +120,7 @@ final class WebsocketClientImpl implements WebsocketClient {
       case io.WebSocket.open:
         _channel?.add(interceptedMessage.content);
       case io.WebSocket.closed when _onClose != null:
-        _onClose(_channel!.closeCode!);
+        _onClose(_channel!.closeCode!, _channel!.closeReason);
     }
   }
 
