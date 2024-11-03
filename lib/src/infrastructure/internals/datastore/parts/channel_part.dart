@@ -205,9 +205,10 @@ final class ChannelPart implements DataStorePart {
     final voiceController = VoiceController(_kernel, serverId: serverId, channelId: id, selfDeaf: false, selfMute: false);
 
     _kernel.voices.addController(voiceController);
-    print('Shards: ${_kernel.shards}');
     await voiceController.connect();
 
+    await Future.delayed(Duration(seconds: 1));
+// todo: delete this
     return voiceController;
   }
 }
