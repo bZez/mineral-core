@@ -32,6 +32,7 @@ dependencies:
   mansion: ^0.1.0
   uuid: ^4.4.2
   sodium: ^3.4.0
+  chunked_stream: ^1.4.2
 
 dev_dependencies:
   lints: ^3.0.0
