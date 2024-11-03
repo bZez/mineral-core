@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:mineral/src/infrastructure/internals/voice/voice_opcode.dart';
+import 'package:mineral/src/infrastructure/internals/voice/wss/voice_opcode.dart';
 
 final class VoiceMessageBuilder {
   VoiceOpCode? _code;

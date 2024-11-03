@@ -2,7 +2,7 @@ import 'package:mineral/src/infrastructure/internals/container/ioc_container.dar
 import 'package:mineral/src/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listenable_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/packet_type.dart';
-import 'package:mineral/src/infrastructure/internals/voice/audio_player.dart';
+import 'package:mineral/src/infrastructure/internals/voice/wss/audio_player.dart';
 import 'package:mineral/src/infrastructure/internals/voice/voice_manager.dart';
 import 'package:mineral/src/infrastructure/internals/wss/shard_message.dart';
 import 'package:mineral/src/infrastructure/services/logger/logger.dart';
@@ -31,5 +31,6 @@ final class VoiceServerUpdatePacket implements ListenablePacket {
 
     controller.audioPlayer = await AudioPlayer.init(localPort: 7878, controller: controller, endpoint: endpoint, token: token);
 
+    await controller.audioPlayer.connect();
   }
 }

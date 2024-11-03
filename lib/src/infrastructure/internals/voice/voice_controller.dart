@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:mineral/api.dart';
-import 'package:mineral/src/infrastructure/internals/voice/audio_player.dart';
 import 'package:mineral/src/infrastructure/internals/voice/speaking_mode.dart';
+import 'package:mineral/src/infrastructure/internals/voice/wss/audio_player.dart';
 import 'package:mineral/src/infrastructure/internals/wss/builders/discord_message_builder.dart';
 import 'package:mineral/src/infrastructure/internals/wss/constants/op_code.dart';
 import 'package:mineral/src/infrastructure/kernel/kernel.dart';
@@ -12,10 +12,10 @@ final class VoiceController {
   final Snowflake channelId;
   final bool selfDeaf;
   final bool selfMute;
-  final KernelContract _kernel;
-  late final AudioPlayer audioPlayer;
+  final KernelContract kernel;
+  late AudioPlayer audioPlayer;
 
-  VoiceController(this._kernel, {
+  VoiceController(this.kernel, {
     required this.serverId,
     required this.channelId,
     required this.selfDeaf,
@@ -24,9 +24,9 @@ final class VoiceController {
 
   Future<void> connect() async {
     print('Connecting to voice channel : $channelId...');
-    print(_kernel.shards.length);
+    print(kernel.shards.length);
 
-    _kernel.shards.forEach((id, shard) {
+    kernel.shards.forEach((id, shard) {
       print('Sending voice state update to shard : $id');
       final message = ShardMessageBuilder()
         .setOpCode(OpCode.voiceStateUpdate)
@@ -42,14 +42,15 @@ final class VoiceController {
   }
 
   Future<void> play(File file) async {
+    print('File from voice controller : ${file.path}');
     await audioPlayer.play(file);
   }
 
   Future<void> disconnect() async {
     print('Disconnecting from voice channel : $channelId...');
-    print(_kernel.shards.length);
+    print(kernel.shards.length);
 
-    _kernel.shards.forEach((id, shard) {
+    kernel.shards.forEach((id, shard) {
       print('Sending voice state update to shard : $id');
       final message = ShardMessageBuilder()
         .setOpCode(OpCode.voiceStateUpdate)
@@ -82,18 +83,34 @@ final class VoiceController {
   void speaking({
     required bool speaking,
     required int delay,
-    required int ssrc,
     SpeakingMode mode = SpeakingMode.microphone,
   }) {
-    _kernel.shards.forEach((id, shard) {
-      final message = ShardMessageBuilder()
-        .setOpCode(OpCode.voiceGuildPing)
-        .append('speaking', mode.value)
-        .append('delay', delay)
-        .append('ssrc', ssrc);
+    print('Sending speaking message to voice server...');
+/*    final message = VoiceMessageBuilder()
+      .setOpCode(VoiceOpCode.speaking)
+      .append('speaking', speaking)
+      .append('delay', delay)
+      .append('ssrc', audioPlayer.ssrc)
+      .append('mode', mode.value);
 
-      shard.client.send(message.build());
-    });
+    audioPlayer.wss.send(message.build());*/
+
+    final file = File('test.mp3');
+
+    if (!file.existsSync()) {
+      print('File does not exist');
+      // create file
+      final newFile = File('test.test');
+      newFile.createSync();
+      return;
+    }
+
+    print('Playing audio file...');
+    print(file.path);
+
+    // encrypt audio file
+
+    play(file);
   }
 
   // Other methods like talk, stopTalking, etc.
