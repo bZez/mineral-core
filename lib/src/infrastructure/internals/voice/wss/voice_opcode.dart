@@ -11,6 +11,21 @@ enum VoiceOpCode {
   resumed(9),
   clientConnect(11),
   clientDisconnect(13),
+
+  // DAVE protocol
+
+  davePrepareTransition(21),
+  daveExecuteTransition(22),
+  daveTransitionReady(23),
+  davePrepareEpoch(24),
+  daveMLSExternalSender(25),
+  daveMLSKeyPackage(26),
+  daveMLSProposal(27),
+  daveMLSCommitWelcome(28),
+  daveMLSAnnounceCommitTransition(29),
+  daveMLSWelcome(30),
+  daveMLSInvalidCommitWelcome(31),
+
   // todo: search for the missing opcodes https://discord.com/developers/docs/topics/opcodes-and-status-codes#voice
   none(11),
   noneTwo(18),

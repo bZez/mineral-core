@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:mineral/src/infrastructure/internals/voice/speaking_mode.dart';
 import 'package:mineral/src/infrastructure/internals/voice/voice_controller.dart';
 import 'package:mineral/src/infrastructure/internals/voice/wss/voice_authentication.dart';
 import 'package:mineral/src/infrastructure/internals/voice/wss/voice_opcode.dart';
@@ -48,7 +49,7 @@ final class AudioPlayer {
     required int localPort,
     required VoiceController controller,
     required String token,
-    EncryptionMode encryptionMode = EncryptionMode.xSalsa20Poly1305,
+    EncryptionMode encryptionMode = EncryptionMode.xSalsa20Poly1305Suffix,
   }) async {
     endpoint = endpoint.replaceFirst('wss://', '').replaceAll(':443', '');
     final encryption = await Encryption.getEncryption(encryptionMode).init();
@@ -129,6 +130,10 @@ final class AudioPlayer {
     final chunkSize = 960;
     final audioStream = Ffmpeg.chunkedStdout(file.path, chunkSize);
     VoicePacket.resetMetadata();
+    final message = VoiceMessageBuilder().setOpCode(VoiceOpCode.speaking).append('speaking', SpeakingMode.microphone.value).append('delay', 0).append('ssrc', ssrc);
+
+    await wss.send(message.build());
+    final nonce = VoicePacket.generateNonce(ssrc);
 
     await for (final chunk in audioStream) {
       if (stopped) {
@@ -139,21 +144,14 @@ final class AudioPlayer {
 
       final data = Uint8List.fromList(chunk);
       final key = Uint8List.fromList(secretKey);
-      final nonce = VoicePacket.generateNonce(ssrc);
       final encryptedData = encryption.encrypt(key: key, message: data, nonce: nonce);
 
       final voicePacket = VoicePacket(encryptedData, ssrc: ssrc);
 
-      final message = VoiceMessageBuilder()
-      .setOpCode(VoiceOpCode.speaking)
-      .append('speaking', true)
-      .append('delay', 5)
-      .append('ssrc', ssrc);
-
-      await wss.send(message.build());
       print('Sending speaking message to voice server: $remoteIp:$remotePort');
 
-      socket.send(voicePacket.buffer, InternetAddress(remoteIp), remotePort);
+      final test = socket.send(voicePacket.buffer, InternetAddress(remoteIp), remotePort);
+      print('Sent voice packet to voice server : $test');
       await Future.delayed(Duration(milliseconds: 20));
     }
 

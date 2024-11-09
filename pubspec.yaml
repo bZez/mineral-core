@@ -31,8 +31,8 @@ dependencies:
   toml: ^0.16.0
   mansion: ^0.1.0
   uuid: ^4.4.2
-  sodium: ^3.4.0
   chunked_stream: ^1.4.2
+  opus_dart: ^3.0.1
 
 dev_dependencies:
   lints: ^3.0.0

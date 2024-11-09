@@ -6,6 +6,7 @@ import 'package:mineral/api.dart';
 import 'package:mineral/services.dart';
 import 'package:mineral/src/infrastructure/internals/container/ioc_container.dart';
 import 'package:mineral/src/infrastructure/internals/voice/wss/audio_player.dart';
+import 'package:mineral/src/infrastructure/internals/voice/wss/ip_discovery.dart';
 import 'package:mineral/src/infrastructure/internals/voice/wss/voice_opcode.dart';
 import 'package:mineral/src/infrastructure/internals/wss/builders/discord_message_builder.dart';
 import 'package:mineral/src/infrastructure/internals/wss/builders/voice_message_builder.dart';
@@ -44,7 +45,7 @@ final class VoiceAuthenticationImpl implements VoiceAuthentication {
   VoiceAuthenticationImpl(this.player);
 
   @override
-  void identify(Map<String, dynamic> payload) {
+  Future<void> identify(Map<String, dynamic> payload) async {
     print('Received identify voice with payload: $payload');
     print(sessionId);
     createHeartbeatTimer(payload['heartbeat_interval']);
@@ -57,9 +58,10 @@ final class VoiceAuthenticationImpl implements VoiceAuthentication {
         .append('server_id', player.controller.serverId)
         .append('user_id', bot.id)
         .append('session_id', sessionId)
+        .append('max_dave_protocol_version', 1)
         .append('token', player.token);
 
-    player.wss.send(message.build());
+    await player.wss.send(message.build());
   }
 
   void createHeartbeatTimer(int interval) {
@@ -115,21 +117,24 @@ final class VoiceAuthenticationImpl implements VoiceAuthentication {
   Future<void> ready(Map<String, dynamic> payload) async {
     print('Received ready voice with payload: $payload');
 
+    final ip = await ipDiscovery(ssrc: payload['ssrc'], address: InternetAddress(payload['ip']), port: payload['port']);
     final socket = await RawDatagramSocket.bind(
       InternetAddress.anyIPv4,
-      0,
+      1337,
     );
+
+    print('Selected protocol : ${ip!.address!.address}:${ip.port}');
 
     final selectProtocolMessage = VoiceMessageBuilder()
       .setOpCode(VoiceOpCode.selectProtocol)
       .append('protocol', 'udp')
       .append('data', {
-        'address': socket.address.address,
-        'port': socket.port,
-        'mode': 'xsalsa20_poly1305_suffix',
+        'address': ip.address!.address,
+        'port': ip.port,
+        'mode': 'aead_aes256_gcm_rtpsize',
       });
 
-    player.wss.send(selectProtocolMessage.build());
+    await player.wss.send(selectProtocolMessage.build());
    // socket.send(Uint8List.fromList([0x01, 0x00, 0x00, 0x00]), InternetAddress.tryParse(payload['data']['ip'])!, payload['data']['port']);
 
     player
@@ -141,7 +146,5 @@ final class VoiceAuthenticationImpl implements VoiceAuthentication {
     socket.listen((event) {
       print('Received voice packet : $event');
     });
-
-
   }
 }
