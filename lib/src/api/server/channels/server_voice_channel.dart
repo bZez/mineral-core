@@ -116,4 +116,18 @@ final class ServerVoiceChannel extends ServerChannel {
   /// await channel.delete();
   /// ```
   Future<void> delete({String? reason}) => _methods.delete(reason);
+
+  /// Connects to the voice channel.
+  ///
+  /// ```dart
+  /// await channel.connect();
+  /// ```
+  Future<void> connect() => _methods.connect(server.id);
+
+  /// Disconnects from the voice channel.
+  ///
+  /// ```dart
+  /// await channel.disconnect();
+  /// ```
+// Future<void> disconnect() => _methods.disconnect();
 }

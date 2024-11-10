@@ -39,6 +39,9 @@ enum PacketType {
   guildEmojisUpdate('GUILD_EMOJIS_UPDATE'),
   guildStickersUpdate('GUILD_STICKERS_UPDATE'),
 
+  voiceStateUpdate('VOICE_STATE_UPDATE'),
+  voiceServerUpdate('VOICE_SERVER_UPDATE'),
+
   channelPinsUpdate('CHANNEL_PINS_UPDATE');
 
   final String name;

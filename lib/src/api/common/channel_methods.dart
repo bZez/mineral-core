@@ -125,4 +125,8 @@ final class ChannelMethods {
   Future<void> delete(String? reason) async {
     await dataStoreChannel.deleteChannel(id, reason);
   }
+
+  Future<void> connect(Snowflake serverId) async {
+    return dataStoreChannel.connectVoiceChannel(id, serverId);
+  }
 }

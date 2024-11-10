@@ -15,6 +15,8 @@ import 'package:mineral/src/infrastructure/commons/helper.dart';
 import 'package:mineral/src/infrastructure/internals/datastore/data_store_part.dart';
 import 'package:mineral/src/infrastructure/internals/http/discord_header.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/types/serializer.dart';
+import 'package:mineral/src/infrastructure/internals/wss/builders/discord_message_builder.dart';
+import 'package:mineral/src/infrastructure/internals/wss/constants/op_code.dart';
 import 'package:mineral/src/infrastructure/kernel/kernel.dart';
 import 'package:mineral/src/infrastructure/services/http/http_client_status.dart';
 import 'package:mineral/src/infrastructure/services/http/http_request_option.dart';
@@ -196,5 +198,18 @@ final class ChannelPart implements DataStorePart {
     await _kernel.marshaller.cache.putMany({
       _kernel.marshaller.cacheKey.server(server.id): rawServer,
     });
+  }
+
+  Future<void> connectVoiceChannel(Snowflake id, Snowflake serverId) async {
+    final shard = _kernel.shards.values.first;
+
+    final message = ShardMessageBuilder()
+    .setOpCode(OpCode.voiceStateUpdate)
+    .append('guild_id', serverId.value)
+    .append('channel_id', id.value)
+    .append('self_mute', false)
+    .append('self_deaf', false);
+
+    await shard.client.send(message.build());
   }
 }
