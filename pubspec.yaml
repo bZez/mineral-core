@@ -35,6 +35,7 @@ dependencies:
     git:
       url: https://github.com/EPNW/opus_dart
       ref: develop
+  cryptography: ^2.7.0
 
 dev_dependencies:
   lints: ^3.0.0
