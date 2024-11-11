@@ -7,6 +7,7 @@ import 'package:mineral/src/api/common/embed/message_embed.dart';
 import 'package:mineral/src/api/common/message.dart';
 import 'package:mineral/src/api/common/polls/poll.dart';
 import 'package:mineral/src/api/common/snowflake.dart';
+import 'package:mineral/src/infrastructure/internals/voice/voice_controller.dart';
 import 'package:mineral/src/api/private/channels/private_channel.dart';
 import 'package:mineral/src/api/server/channels/server_channel.dart';
 import 'package:mineral/src/api/server/channels/server_text_channel.dart';
@@ -200,16 +201,9 @@ final class ChannelPart implements DataStorePart {
     });
   }
 
-  Future<void> connectVoiceChannel(Snowflake id, Snowflake serverId) async {
-    final shard = _kernel.shards.values.first;
-
-    final message = ShardMessageBuilder()
-    .setOpCode(OpCode.voiceStateUpdate)
-    .append('guild_id', serverId.value)
-    .append('channel_id', id.value)
-    .append('self_mute', false)
-    .append('self_deaf', false);
-
-    await shard.client.send(message.build());
+  Future<VoiceController> connectVoiceChannel(Snowflake id, Snowflake serverId) async {
+    final controller = VoiceController(_kernel, serverId: serverId, channelId: id);
+    await controller.connect();
+    return controller;
   }
 }
