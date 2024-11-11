@@ -1,9 +1,10 @@
 import 'dart:ffi';
+import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:cryptography/cryptography.dart';
 import 'package:mineral/src/infrastructure/io/encryption/encryption.dart';
 import 'package:mineral/src/infrastructure/io/encryption/encryption_type.dart';
-import 'package:opus_dart/opus_bindings.dart';
 import 'package:opus_dart/opus_dart.dart';
 
 final class Aes256GcmEncryption implements Encryption {
@@ -21,22 +22,27 @@ final class Aes256GcmEncryption implements Encryption {
     initOpus(lib);
 
     print('Opus version: ${getOpusVersion()}');
+    // will be used to transport encryption
   }
 
   @override
-  Future<Uint8List> encrypt(String data) async {
-    // Encrypt data using AES-256-GCM
+  Future<Uint8List> encrypt(File file) async {
+    final algorithm = AesGcm.with256bits();
+    final secretKey = SecretKey(key);
 
-    return Uint8List(0);
+    final data = await file.readAsBytes();
+    final encrypted = await algorithm.encrypt(data, secretKey: secretKey, nonce: nonce);
+    final encryptedData = Uint8List.fromList(encrypted.cipherText);
+
+    return encryptedData;
   }
 
   @override
   Future<String> decrypt(String data) async {
-    // Decrypt data using AES-256-GCM
     return '';
   }
 
   Future<DynamicLibrary> _getOpusLib() async {
     return DynamicLibrary.open('/usr/local/lib/libopus.so');
-  }
+  } // not really used
 }
