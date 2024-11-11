@@ -5,6 +5,7 @@ import 'package:mineral/src/api/common/managers/message_manager.dart';
 import 'package:mineral/src/api/common/snowflake.dart';
 import 'package:mineral/src/api/common/types/channel_type.dart';
 import 'package:mineral/src/api/common/video_quality.dart';
+import 'package:mineral/src/infrastructure/internals/voice/voice_controller.dart';
 import 'package:mineral/src/api/server/channels/server_category_channel.dart';
 import 'package:mineral/src/api/server/channels/server_channel.dart';
 import 'package:mineral/src/api/server/managers/threads_manager.dart';
@@ -122,7 +123,7 @@ final class ServerVoiceChannel extends ServerChannel {
   /// ```dart
   /// await channel.connect();
   /// ```
-  Future<void> connect() => _methods.connect(server.id);
+  Future<VoiceController> connect() => _methods.connect(server.id);
 
   /// Disconnects from the voice channel.
   ///

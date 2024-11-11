@@ -16,8 +16,6 @@ import 'package:mineral/src/infrastructure/commons/helper.dart';
 import 'package:mineral/src/infrastructure/internals/datastore/data_store_part.dart';
 import 'package:mineral/src/infrastructure/internals/http/discord_header.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/types/serializer.dart';
-import 'package:mineral/src/infrastructure/internals/wss/builders/discord_message_builder.dart';
-import 'package:mineral/src/infrastructure/internals/wss/constants/op_code.dart';
 import 'package:mineral/src/infrastructure/kernel/kernel.dart';
 import 'package:mineral/src/infrastructure/services/http/http_client_status.dart';
 import 'package:mineral/src/infrastructure/services/http/http_request_option.dart';
