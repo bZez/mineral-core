@@ -8,7 +8,9 @@ abstract class Encryption {
 
   Future<void> init();
 
-  Future<Uint8List> encrypt(File file);
+  Future<Uint8List> encrypt(Uint8List file, Uint8List nonce);
 
-  Future<String> decrypt(String data);
+  Future<String> decrypt(Uint8List data, Uint8List nonce, Uint8List mac);
+
+  Uint8List generateNonce(int length, int seq);
 }
