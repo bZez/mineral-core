@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:mineral/src/infrastructure/internals/voice/wss/constants/voice_op_code.dart';
 
 abstract interface class VoiceMessage<T> {
@@ -34,7 +35,8 @@ final class VoiceMessageImpl<T> implements VoiceMessage<T> {
   factory VoiceMessageImpl.of(Map<String, dynamic> message) => VoiceMessageImpl(
       type: message['t'],
       opCode:
-          VoiceOpCode.values.firstWhere((element) => element.value == message['op']),
+          VoiceOpCode.values.firstWhereOrNull((element) => element.value == message['op']) ??
+              VoiceOpCode.unknown,
       sequence: message['s'],
       payload: message['d']);
 

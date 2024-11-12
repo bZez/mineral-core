@@ -10,7 +10,8 @@ enum VoiceOpCode {
   hello(8),
   resumed(9),
   clientConnect(11),
-  clientDisconnect(13);
+  clientDisconnect(13),
+  unknown(-1);
 
   final int value;
 
