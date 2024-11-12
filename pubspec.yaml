@@ -31,11 +31,8 @@ dependencies:
   toml: ^0.16.0
   mansion: ^0.1.0
   uuid: ^4.4.2
-  opus_dart:
-    git:
-      url: https://github.com/EPNW/opus_dart
-      ref: develop
   cryptography: ^2.7.0
+  udp: ^5.0.3
 
 dev_dependencies:
   lints: ^3.0.0
