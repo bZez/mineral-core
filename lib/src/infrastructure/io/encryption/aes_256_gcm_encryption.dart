@@ -1,36 +1,27 @@
-import 'dart:ffi';
-import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:cryptography/cryptography.dart';
 import 'package:mineral/src/infrastructure/io/encryption/encryption.dart';
 import 'package:mineral/src/infrastructure/io/encryption/encryption_type.dart';
-import 'package:opus_dart/opus_dart.dart';
 
 final class Aes256GcmEncryption implements Encryption {
   @override
   final EncryptionType type = EncryptionType.aeadAes256GcmRtpsize;
-
   final Uint8List key;
-  final Uint8List nonce;
+  final int ssrc;
 
-  Aes256GcmEncryption(this.key, this.nonce);
+  Aes256GcmEncryption(this.key, this.ssrc);
 
   @override
   Future<void> init() async {
-    final lib = await _getOpusLib();
-    initOpus(lib);
-
-    print('Opus version: ${getOpusVersion()}');
     // will be used to transport encryption
   }
 
   @override
-  Future<Uint8List> encrypt(File file) async {
+  Future<Uint8List> encrypt(Uint8List data, Uint8List nonce) async {
     final algorithm = AesGcm.with256bits();
     final secretKey = SecretKey(key);
 
-    final data = await file.readAsBytes();
     final encrypted = await algorithm.encrypt(data, secretKey: secretKey, nonce: nonce);
     final encryptedData = Uint8List.fromList(encrypted.cipherText);
 
@@ -38,11 +29,28 @@ final class Aes256GcmEncryption implements Encryption {
   }
 
   @override
-  Future<String> decrypt(String data) async {
-    return '';
+  Uint8List generateNonce(int length, int seq) {
+    final nonce = ByteData(length)
+      ..setUint8(0, 0x80)
+      ..setUint8(1, 0x78)
+      ..setUint16(2, seq)
+      ..setUint32(4, seq * 960)
+      ..setUint32(8, ssrc);
+
+    return nonce.buffer.asUint8List();
   }
 
-  Future<DynamicLibrary> _getOpusLib() async {
-    return DynamicLibrary.open('/usr/local/lib/libopus.so');
-  } // not really used
+  @override
+  Future<String> decrypt(Uint8List data, Uint8List nonce, Uint8List mac) async {
+    final algorithm = AesGcm.with256bits();
+    final secretKey = SecretKey(key);
+
+    final secretBox = SecretBox(data, nonce: nonce, mac: Mac(mac));
+    final decrypted = await algorithm.decrypt(
+      secretBox,
+      secretKey: secretKey,
+    );
+
+    return String.fromCharCodes(decrypted);
+  }
 }
