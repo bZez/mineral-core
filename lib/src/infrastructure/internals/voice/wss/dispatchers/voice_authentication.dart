@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -7,7 +6,7 @@ import 'package:mineral/api.dart';
 import 'package:mineral/container.dart';
 import 'package:mineral/src/infrastructure/internals/voice/udp/udp_information.dart';
 import 'package:mineral/src/infrastructure/internals/voice/udp/udp_tunnel.dart';
-import 'package:mineral/src/infrastructure/internals/voice/udp/utils/ip_discovery.dart';
+import 'package:mineral/src/infrastructure/internals/voice/udp/utils/voice_utils.dart';
 import 'package:mineral/src/infrastructure/internals/voice/wss/builders/voice_message_builder.dart';
 import 'package:mineral/src/infrastructure/internals/voice/wss/constants/voice_op_code.dart';
 import 'package:mineral/src/infrastructure/internals/voice/wss/voice_wss.dart';
