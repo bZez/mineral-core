@@ -2,6 +2,8 @@ import 'package:mineral/api.dart';
 import 'package:mineral/container.dart';
 import 'package:mineral/src/api/common/voice/voice_state.dart';
 import 'package:mineral/src/infrastructure/internals/voice/voice_manager.dart';
+import 'package:mineral/src/infrastructure/internals/voice/wss/builders/voice_message_builder.dart';
+import 'package:mineral/src/infrastructure/internals/voice/wss/constants/voice_op_code.dart';
 import 'package:mineral/src/infrastructure/internals/voice/wss/voice_wss.dart';
 import 'package:mineral/src/infrastructure/internals/wss/builders/discord_message_builder.dart';
 import 'package:mineral/src/infrastructure/internals/wss/constants/op_code.dart';
@@ -49,6 +51,20 @@ final class VoiceController {
         .append('self_deaf', false);
 
     await shard.client.send(message.build());
-    client.authentication.heartbeatTimer.cancel();
+    client.heartbeat.heartbeatTimer.cancel();
+  }
+
+  /// Used to send speaking status to the voice channel.
+  Future<void> speak({ int delay = 0 }) async {
+    final message = VoiceMessageBuilder()
+        .setOpCode(VoiceOpCode.speaking)
+        .append('speaking', 5)
+        .append('delay', delay)
+        .append('ssrc', client.udpTunnel.remoteInformation.ssrc);
+
+    await client.client.send(message.build());
+
+    print('send speaking status to wss');
+    await client.udpTunnel.test();
   }
 }
