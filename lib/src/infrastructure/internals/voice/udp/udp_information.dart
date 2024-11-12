@@ -7,13 +7,12 @@ final class UdpInformation {
   final int port;
   final int ssrc;
   final EncryptionType mode;
-  final Uint8List secretKey;
+  late final Uint8List secretKey;
 
   UdpInformation({
     required this.ip,
     required this.port,
     required this.mode,
-    required this.secretKey,
     required this.ssrc,
   });
 }
