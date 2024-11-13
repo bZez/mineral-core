@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:async/async.dart';
+import 'package:chunked_stream/chunked_stream.dart';
 import 'package:mineral/src/infrastructure/internals/voice/udp/utils/internet_info.dart';
 
 final class VoiceUtils {
@@ -51,5 +53,41 @@ final class VoiceUtils {
     final dLength = datagram.data.length;
     final extPort = datagram.data.buffer.asByteData().getUint16(dLength - 2);
     return InternetInfo(extAddress, extPort);
+  }
+
+    static Stream<Uint8List> chunkedStdout(String input, int size) async* {
+    final args = [
+      '-i',
+      '$input',
+      '-ar',
+      '48k',
+      '-ac',
+      '2',
+      '-c:a',
+      'libopus',
+      '-b:a',
+      '96k',
+      '-f',
+      's16le',
+      '-loglevel',
+      'quiet',
+      'pipe:1',
+    ];
+
+    final process = await Process.start('ffmpeg', args);
+    final reader = ChunkedStreamReader(bufferChunkedStream(process.stdout));
+    try {
+      while (true) {
+        final chunk = await reader.readChunk(size);
+        // print(chunk);
+        yield Uint8List.fromList(chunk);
+
+        if (chunk.length < size) {
+          break;
+        }
+      }
+    } finally {
+      reader.cancel();
+    }
   }
 }
