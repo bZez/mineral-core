@@ -2,16 +2,20 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:mineral/src/infrastructure/internals/voice/udp/udp_information.dart';
+import 'package:mineral/src/infrastructure/internals/voice/udp/utils/voice_packet.dart';
+import 'package:mineral/src/infrastructure/internals/voice/udp/utils/voice_utils.dart';
+import 'package:mineral/src/infrastructure/internals/voice/wss/voice_wss.dart';
 import 'package:mineral/src/infrastructure/io/encryption/aes_256_gcm_encryption.dart';
 import 'package:udp/udp.dart';
 
-class UDPTunnel {
+final class UDPTunnel {
   final UdpInformation remoteInformation;
   late final UDP receiver;
   late final UDP sender;
   late final Aes256GcmEncryption encryption;
+  late final VoiceWss client;
 
-  UDPTunnel(this.remoteInformation);
+  UDPTunnel(this.remoteInformation, { required this.client });
 
   Future<void> connect() async {
     sender = await UDP.bind(Endpoint.any(port: Port(remoteInformation.port)));
@@ -30,26 +34,34 @@ class UDPTunnel {
   }
 
   Future<void> send(List<int> data) async {
-    final nonce = encryption.generateNonce(12, 0);
+    final nonce = encryption.generateNonce(12, VoicePacket.seq);
+    final seq = ByteData(2)..setUint16(0, VoicePacket.seq);
     final encryptedData = await encryption.encrypt(Uint8List.fromList(data), nonce);
 
+    print('send data to udp -> ${encryptedData.length} bytes, seq: ${VoicePacket.seq}, nonce: $nonce');
+
     // get the timestamp in 4 bytes
-    final timestamp = ByteData(4)..setUint32(0, 0);
+    final timestamp = ByteData(4)..setUint32(0, VoicePacket.timestamp);
     final ssrc = ByteData(4)..setUint32(0, remoteInformation.ssrc);
 
-    final packet = Uint8List.fromList([...[0x80], ...[0x78], ...[0x0, 0x0], ...timestamp.buffer.asUint8List(), ...ssrc.buffer.asUint8List(), ...encryptedData]);
+    final packet = Uint8List.fromList([...[0x80], ...[0x78], ...seq.buffer.asUint8List(), ...timestamp.buffer.asUint8List(), ...ssrc.buffer.asUint8List(), ...encryptedData]);
 
     await sender.send(packet, Endpoint.multicast(InternetAddress(remoteInformation.ip), port: Port(remoteInformation.port)));
   }
 
   Future<void> test() async {
     final file = File('test.mp3');
-    final data = await file.readAsBytes();
+    final data = VoiceUtils.chunkedStdout(file.path, 960);
+    VoicePacket.resetMetadata();
 
+    await for (final chunk in data) {
+      VoicePacket.incrementMetadata();
+      client.controller.speak();
 
-    // use opus encoder and send data
-    print('sending data');
-    await send(data);
-    print('sent data');
+      await send(chunk);
+      await Future.delayed(const Duration(milliseconds: 20));
+    }
+
+    print('Finished');
   }
 }
