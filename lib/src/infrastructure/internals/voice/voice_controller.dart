@@ -65,6 +65,5 @@ final class VoiceController {
     await client.client.send(message.build());
 
     print('send speaking status to wss');
-    await client.udpTunnel.test();
   }
 }
