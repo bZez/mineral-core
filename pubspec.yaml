@@ -33,6 +33,7 @@ dependencies:
   uuid: ^4.4.2
   cryptography: ^2.7.0
   udp: ^5.0.3
+  chunked_stream: ^1.4.2
 
 dev_dependencies:
   lints: ^3.0.0
