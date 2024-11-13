@@ -18,7 +18,6 @@ import 'package:mineral/src/infrastructure/kernel/kernel.dart';
 final class VoiceAuthentication {
   final VoiceWss voice;
   final KernelContract kernel;
-  late final Timer heartbeatTimer;
 
   VoiceAuthentication(this.voice, this.kernel);
 
@@ -50,6 +49,7 @@ final class VoiceAuthentication {
         mode: EncryptionType.aeadAes256GcmRtpsize,
         ssrc: payload['ssrc'],
       ),
+      client: voice,
     );
 
     final message = VoiceMessageBuilder().setOpCode(VoiceOpCode.selectProtocol).append('protocol', 'udp').append('data', {
