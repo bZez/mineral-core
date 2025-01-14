@@ -26,4 +26,6 @@ abstract class DataStoreContract {
   EmojiPartContract get emoji;
 
   ReactionPartContract get reaction;
+
+  InvitePartConstract get invite;
 }
