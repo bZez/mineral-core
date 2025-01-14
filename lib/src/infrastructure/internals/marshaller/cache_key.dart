@@ -56,6 +56,8 @@ final class CacheKey {
   String embed(String messageId, {String? uid}) =>
       'messages/$messageId/embeds/${uid ?? Uuid().v4()}';
 
+  String invite(String serverId, String inviteId) => '${server(serverId)}/invites/$inviteId';
+
   String poll(String messageId, {String? uid}) =>
       'messages/$messageId/polls/${uid ?? Uuid().v4()}';
 
