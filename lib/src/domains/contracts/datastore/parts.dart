@@ -1,4 +1,5 @@
 import 'package:mineral/api.dart';
+import 'package:mineral/src/api/common/invite/invite.dart';
 import 'package:mineral/src/api/server/voice_state.dart';
 
 abstract interface class DataStorePart {}
@@ -209,4 +210,12 @@ abstract interface class ReactionPartContract implements DataStorePart {
   Future<void> removeForEmoji(String channelId, String messageId, PartialEmoji emoji);
 
   Future<void> removeForUser(String userId, String channelId, String messageId, PartialEmoji emoji);
+}
+
+abstract interface class InvitePartConstract implements DataStorePart {
+  Future<Invite> get(String code, bool force);
+
+  Future<Invite> create(String serverId, { String? channelId, String? targetId, int? maxAge, int? maxUses, bool temporary = false, bool unique = false, String? reason});
+
+  Future<void> delete(String code);
 }
