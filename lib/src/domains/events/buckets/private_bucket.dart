@@ -5,8 +5,8 @@ import 'package:mineral/src/domains/events/contracts/private/private_dialog_subm
 import 'package:mineral/src/domains/events/contracts/private/private_message_create_event.dart';
 import 'package:mineral/src/domains/events/contracts/private/private_text_select_event.dart';
 import 'package:mineral/src/domains/events/contracts/private/private_user_select_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/private_message_reaction_add_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/private_message_reaction_remove_event.dart';
+import 'package:mineral/src/domains/events/contracts/private/private_message_reaction_add_event.dart';
+import 'package:mineral/src/domains/events/contracts/private/private_message_reaction_remove_event.dart';
 import 'package:mineral/src/domains/events/event.dart';
 import 'package:mineral/src/domains/events/event_bucket.dart';
 
