@@ -12,10 +12,10 @@ export 'package:mineral/src/domains/events/contracts/private/private_channel_pin
 export 'package:mineral/src/domains/events/contracts/private/private_channel_update_event.dart';
 export 'package:mineral/src/domains/events/contracts/private/private_dialog_submit_event.dart';
 export 'package:mineral/src/domains/events/contracts/private/private_message_create_event.dart';
+export 'package:mineral/src/domains/events/contracts/private/private_message_reaction_add_event.dart';
+export 'package:mineral/src/domains/events/contracts/private/private_message_reaction_remove_event.dart';
 export 'package:mineral/src/domains/events/contracts/private/private_text_select_event.dart';
 export 'package:mineral/src/domains/events/contracts/private/private_user_select_event.dart';
-export 'package:mineral/src/domains/events/contracts/server/private_message_reaction_add_event.dart';
-export 'package:mineral/src/domains/events/contracts/server/private_message_reaction_remove_event.dart';
 export 'package:mineral/src/domains/events/contracts/server/server_ban_add_event.dart';
 export 'package:mineral/src/domains/events/contracts/server/server_ban_remove_event.dart';
 export 'package:mineral/src/domains/events/contracts/server/server_button_click_event.dart';
@@ -28,6 +28,8 @@ export 'package:mineral/src/domains/events/contracts/server/server_create_event.
 export 'package:mineral/src/domains/events/contracts/server/server_delete_event.dart';
 export 'package:mineral/src/domains/events/contracts/server/server_dialog_submit_event.dart';
 export 'package:mineral/src/domains/events/contracts/server/server_emojis_update_event.dart';
+export 'package:mineral/src/domains/events/contracts/server/server_invite_create_event.dart';
+export 'package:mineral/src/domains/events/contracts/server/server_invite_delete_event.dart';
 export 'package:mineral/src/domains/events/contracts/server/server_member_add_event.dart';
 export 'package:mineral/src/domains/events/contracts/server/server_member_remove_event.dart';
 export 'package:mineral/src/domains/events/contracts/server/server_member_select_event.dart';

@@ -13,8 +13,8 @@ import 'package:mineral/src/domains/events/contracts/private/private_dialog_subm
 import 'package:mineral/src/domains/events/contracts/private/private_message_create_event.dart';
 import 'package:mineral/src/domains/events/contracts/private/private_text_select_event.dart';
 import 'package:mineral/src/domains/events/contracts/private/private_user_select_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/private_message_reaction_add_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/private_message_reaction_remove_event.dart';
+import 'package:mineral/src/domains/events/contracts/private/private_message_reaction_add_event.dart';
+import 'package:mineral/src/domains/events/contracts/private/private_message_reaction_remove_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_ban_add_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_ban_remove_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_button_click_event.dart';
@@ -27,6 +27,8 @@ import 'package:mineral/src/domains/events/contracts/server/server_create_event.
 import 'package:mineral/src/domains/events/contracts/server/server_delete_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_dialog_submit_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_emojis_update_event.dart';
+import 'package:mineral/src/domains/events/contracts/server/server_invite_create_event.dart';
+import 'package:mineral/src/domains/events/contracts/server/server_invite_delete_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_member_add_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_member_chunk_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_member_remove_event.dart';
@@ -110,6 +112,9 @@ enum Event implements EnhancedEnum, EventType {
   serverMemberChunk(ServerMemberChunkEvent, ['Server server', 'Map<Snowflake, Member> members']),
   serverMessageReactionAdd(ServerMessageReactionAddEvent, ['MessageReaction reaction']),
   serverMessageReactionRemove(ServerMessageReactionRemoveEvent, ['MessageReaction reaction']),
+
+  serverInviteCreate(ServerInviteCreateEvent, ['Server server', 'Invite invite']),
+  serverInviteDelete(ServerInviteDeleteEvent, ['Server server', 'Invite? invite']),
 
   // private
   privateMessageCreate(PrivateMessageCreateEvent, ['PrivateMessage message']),
