@@ -24,6 +24,9 @@ enum PacketType implements PacketTypeContract {
   channelUpdate('CHANNEL_UPDATE'),
   channelDelete('CHANNEL_DELETE'),
 
+  inviteCreate('INVITE_CREATE'),
+  inviteDelete('INVITE_DELETE'),
+
   guildMemberAdd('GUILD_MEMBER_ADD'),
   guildMemberRemove('GUILD_MEMBER_REMOVE'),
   guildMemberUpdate('GUILD_MEMBER_UPDATE'),
